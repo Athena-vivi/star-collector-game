@@ -115,72 +115,14 @@
         .desktop-only-content { display: none; }
 
         @media (max-width: 768px) {
-            body {
-                overflow: auto; /* 允许移动端滚动 */
-            }
             h1 {
                 font-size: 2rem;
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
             .header {
-                padding: 15px;
+                padding: 15px 15px 5px 15px;
             }
-            main {
-                padding: 20px;
-                min-height: auto;
-            }
-            .game-container {
-                margin-bottom: 30px;
-            }
-            .desktop-only-content {
-                display: block; /* 在移动端也显示内容 */
-            }
-            .content-section {
-                background: rgba(0, 0, 0, 0.2);
-                border-radius: 15px;
-                padding: 20px;
-                margin: 20px 0;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            }
-            .content-section h2 {
-                color: #E0E0E0;
-                font-size: 1.4rem;
-                margin-bottom: 12px;
-                border-bottom: 2px solid #00BCD4;
-                padding-bottom: 8px;
-            }
-            .content-section p {
-                color: #B0B0B0;
-                margin-bottom: 12px;
-                font-size: 0.9rem;
-                line-height: 1.5;
-            }
-            .features-grid {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 15px;
-                margin-top: 15px;
-            }
-            .feature-card {
-                background: rgba(26, 42, 51, 0.8);
-                padding: 15px;
-                border-radius: 8px;
-                border-left: 3px solid #00BCD4;
-            }
-            .feature-card h3 {
-                color: #E0E0E0;
-                margin-bottom: 8px;
-                font-size: 1rem;
-            }
-            .feature-card p {
-                font-size: 0.85rem;
-                margin: 0;
-            }
-            .tips-list {
-                list-style: none;
-                padding: 0;
-            }
-            .tips-list li {
+        }
         
         @media (min-width: 769px) {
             body { 
