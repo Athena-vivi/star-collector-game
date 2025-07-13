@@ -22,6 +22,9 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-4942713186815141" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/placeholder-logo.svg" type="image/svg+xml" />
+        <link rel="icon" href="/placeholder-logo.png" type="image/png" />
       </head>
       <body className={inter.className}>
         <Script
