@@ -24,6 +24,20 @@ interface DecisionAnalysis {
   considerations: string[]
 }
 
+// 限制每日AI问答次数
+function canAskAI() {
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `ai_ask_count_${today}`;
+  const count = parseInt(localStorage.getItem(key) || "0", 10);
+  return count < 5;
+}
+function recordAIAsk() {
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `ai_ask_count_${today}`;
+  const count = parseInt(localStorage.getItem(key) || "0", 10);
+  localStorage.setItem(key, (count + 1).toString());
+}
+
 export default function DecisionObservatory() {
   const [decisionTitle, setDecisionTitle] = useState("")
   const [decisionContext, setDecisionContext] = useState("")
@@ -53,6 +67,12 @@ export default function DecisionObservatory() {
   const analyzeDecision = async () => {
     if (!decisionTitle.trim() || options.length < 2) return
 
+    // 新增：AI问答每日5次限制
+    if (!canAskAI()) {
+      alert("今日免费额度已用完");
+      return;
+    }
+    recordAIAsk();
     setIsAnalyzing(true)
 
     try {

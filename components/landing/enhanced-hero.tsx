@@ -126,6 +126,7 @@ export default function EnhancedHero() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-3xl blur-3xl transform -rotate-1" />
             <div className="relative bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-700/50 p-12">
+              {/* 删除 Daily Free Credits 浮层 */}
               <div className="grid lg:grid-cols-3 gap-8">
                 {/* 目标设定预览 */}
                 <motion.div

@@ -336,21 +336,7 @@ export default function StudioPage() {
           <p className="text-gray-300">
             Transform your imagination into unique cosmic wallpapers
           </p>
-          <div className="mt-4 flex items-center gap-4">
-            <Badge variant="outline" className="border-indigo-500/30 text-indigo-300">
-              Daily Free Credits: {remainingFree}
-            </Badge>
-            {remainingFree <= 0 && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={resetFreeCredits}
-                className="border-green-500/30 text-green-300 hover:bg-green-500/10 text-xs"
-              >
-                Reset Credits (Dev)
-              </Button>
-            )}
-          </div>
+          {/* 删除顶部 Daily Free Credits 显示，只保留右侧卡片内的 */}
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -440,7 +426,11 @@ export default function StudioPage() {
 
           {/* 右侧生成队列 */}
           <div>
-            <Card className="bg-black/40 backdrop-blur-sm border-indigo-500/30">
+            <Card className="bg-black/40 backdrop-blur-sm border-indigo-500/30 relative">
+              {/* Daily Free Credits 右上角浮层 */}
+              <div className="absolute top-4 right-4 z-20 bg-white/90 text-blue-700 text-xs font-bold px-3 py-1 rounded shadow">
+                Daily Free Credits: {remainingFree}
+              </div>
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Clock className="w-5 h-5 text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text" />

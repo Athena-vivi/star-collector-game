@@ -44,6 +44,18 @@ export default function AskPage() {
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const [freeAskCount, setFreeAskCount] = useState(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = `ai_ask_count_${today}`;
+    return 5 - parseInt(localStorage.getItem(key) || "0", 10);
+  });
+
+  // 每次提问后更新剩余次数
+  const updateFreeAskCount = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = `ai_ask_count_${today}`;
+    setFreeAskCount(5 - parseInt(localStorage.getItem(key) || "0", 10));
+  };
 
   const quickQuestions: QuickQuestion[] = [
     {
@@ -76,6 +88,16 @@ export default function AskPage() {
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return
+
+    const today = new Date().toISOString().slice(0, 10);
+    const key = `ai_ask_count_${today}`;
+    const count = parseInt(localStorage.getItem(key) || "0", 10);
+    if (count >= 5) {
+      alert("You have used all your free credits for today.");
+      return;
+    }
+    localStorage.setItem(key, (count + 1).toString());
+    updateFreeAskCount();
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -119,7 +141,7 @@ export default function AskPage() {
         const aiResponse: Message = {
           id: (Date.now() + 1).toString(),
           type: 'ai',
-          content: 'AI暂时无法回答该问题，请稍后再试或换个问题。',
+          content: 'AI temporarily cannot answer this question, please try again later or ask a different question.',
           timestamp: new Date(),
           links: [],
           images: []
@@ -182,10 +204,16 @@ export default function AskPage() {
           <div className="lg:col-span-3 order-1 lg:order-2">
             <Card className="bg-black/40 backdrop-blur-sm border-blue-500/20 h-full flex flex-col">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Bot className="w-5 h-5 text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text" />
-                  AI Cosmic Assistant
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Bot className="w-5 h-5 text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text" />
+                    AI Cosmic Assistant
+                  </CardTitle>
+                  {/* 免费额度浮层 */}
+                  <div className="ml-auto bg-white/90 text-blue-700 text-xs font-bold px-3 py-1 rounded shadow">
+                    Daily Free Credits: {freeAskCount}/5
+                  </div>
+                </div>
               </CardHeader>
               
               <CardContent className="flex-1 flex flex-col">
