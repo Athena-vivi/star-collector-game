@@ -73,15 +73,7 @@ export default function EnhancedHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <Link href="/dashboard">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-lg px-10 py-4 h-auto font-bold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 border-0"
-              >
-                Begin Your Journey
-                <ArrowRight className="ml-3 h-5 w-5" />
-              </Button>
-            </Link>
+            {/* 移除 /dashboard 相关按钮 */}
             <Link href="/demo">
               <Button
                 size="lg"

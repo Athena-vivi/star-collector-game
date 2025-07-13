@@ -88,19 +88,15 @@ export default function EnhancedHeader() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Link href="/dashboard">
-              <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button
-                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-purple-500/25 border-0"
-                rightIcon={<ChevronDown className="h-4 w-4 rotate-[-90deg]" />}
-              >
-                Start Free Trial
-              </Button>
-            </Link>
+            <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium">
+              Sign In
+            </Button>
+            <Button
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-purple-500/25 border-0"
+              rightIcon={<ChevronDown className="h-4 w-4 rotate-[-90deg]" />}
+            >
+              Start Free Trial
+            </Button>
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -166,23 +162,19 @@ export default function EnhancedHeader() {
                   ))}
 
                   <div className="flex flex-col space-y-3 pt-4 border-t border-slate-700/50">
-                    <Link href="/dashboard">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Sign In
-                      </Button>
-                    </Link>
-                    <Link href="/dashboard">
-                      <Button
-                        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white border-0"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Start Free Trial
-                      </Button>
-                    </Link>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Button>
+                    <Button
+                      className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white border-0"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Start Free Trial
+                    </Button>
                   </div>
                 </nav>
               </div>

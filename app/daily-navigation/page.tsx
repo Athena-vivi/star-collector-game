@@ -45,15 +45,7 @@ export default function DailyNavigationPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg font-medium"
-                >
-                  <Compass className="mr-2 h-5 w-5" />
-                  Start Daily Check-ins
-                </Button>
-              </Link>
+              {/* 移除 /dashboard 相关按钮 */}
               <Link href="/">
                 <Button
                   size="lg"
@@ -244,15 +236,7 @@ export default function DailyNavigationPage() {
           <p className="text-xl text-slate-100 mb-8 max-w-2xl mx-auto">
             Build the habit that successful people swear by - daily reflection and intention setting.
           </p>
-          <Link href="/dashboard">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg font-medium"
-            >
-              <Compass className="mr-2 h-5 w-5" />
-              Begin Daily Check-ins
-            </Button>
-          </Link>
+          {/* 移除 /dashboard 相关按钮 */}
         </div>
       </section>
 

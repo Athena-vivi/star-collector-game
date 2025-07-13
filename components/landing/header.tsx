@@ -46,17 +46,14 @@ export default function Header() {
           </nav>
 
           {/* Desktop CTA */}
+          {/* 移除 /dashboard 相关按钮 */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/dashboard">
-              <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button className="bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-sm">
-                Start Free Trial
-              </Button>
-            </Link>
+            <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+              Sign In
+            </Button>
+            <Button className="bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-sm">
+              Start Free Trial
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -102,23 +99,19 @@ export default function Header() {
                 FAQ
               </Link>
               <div className="flex flex-col space-y-3 pt-4 border-t border-slate-200">
-                <Link href="/dashboard">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-slate-600 hover:text-slate-900 font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Start Free Trial
-                  </Button>
-                </Link>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-slate-600 hover:text-slate-900 font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Start Free Trial
+                </Button>
               </div>
             </nav>
           </div>

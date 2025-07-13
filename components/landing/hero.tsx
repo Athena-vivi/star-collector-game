@@ -31,15 +31,7 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Link href="/dashboard">
-              <Button
-                size="lg"
-                className="bg-slate-900 hover:bg-slate-800 text-white text-lg px-10 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                Begin Your Journey
-                <ArrowRight className="ml-3 h-5 w-5" />
-              </Button>
-            </Link>
+            {/* 移除 /dashboard 相关按钮 */}
             <Link href="#features">
               <Button
                 size="lg"

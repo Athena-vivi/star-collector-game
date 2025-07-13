@@ -25,15 +25,7 @@ export default function CTA() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Link href="/dashboard">
-              <Button
-                size="lg"
-                className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-4 h-auto font-semibold border-0 shadow-lg"
-              >
-                Start Your 14-Day Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            {/* 移除 /dashboard 相关按钮 */}
             <Link href="/demo">
             <Button
               size="lg"

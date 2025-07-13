@@ -268,15 +268,7 @@ export default function ContinuousGrowthPage() {
           <p className="text-xl text-slate-100 mb-8 max-w-2xl mx-auto">
             Start tracking your progress today and unlock the power of AI-driven insights for continuous improvement.
           </p>
-          <Link href="/dashboard">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 shadow-lg font-medium"
-            >
-              <BarChart3 className="mr-2 h-5 w-5" />
-              Start Tracking Progress
-            </Button>
-          </Link>
+          {/* 移除 /dashboard 相关按钮 */}
         </div>
       </section>
 

@@ -88,20 +88,16 @@ export default function EnhancedHeader() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Link href="/dashboard">
-              <Button variant="ghost" className="text-neutral-600 hover:text-neutral-900 font-medium">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button
-                variant="gradient"
-                className="shadow-lg hover:shadow-xl"
-                rightIcon={<ChevronDown className="h-4 w-4 rotate-[-90deg]" />}
-              >
-                Start Free Trial
-              </Button>
-            </Link>
+            <Button variant="ghost" className="text-neutral-600 hover:text-neutral-900 font-medium">
+              Sign In
+            </Button>
+            <Button
+              variant="gradient"
+              className="shadow-lg hover:shadow-xl"
+              rightIcon={<ChevronDown className="h-4 w-4 rotate-[-90deg]" />}
+            >
+              Start Free Trial
+            </Button>
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -167,20 +163,16 @@ export default function EnhancedHeader() {
                   ))}
 
                   <div className="flex flex-col space-y-3 pt-4 border-t border-neutral-200">
-                    <Link href="/dashboard">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-neutral-600 hover:text-neutral-900 font-medium"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Sign In
-                      </Button>
-                    </Link>
-                    <Link href="/dashboard">
-                      <Button variant="gradient" className="w-full" onClick={() => setIsMenuOpen(false)}>
-                        Start Free Trial
-                      </Button>
-                    </Link>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-neutral-600 hover:text-neutral-900 font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Button>
+                    <Button variant="gradient" className="w-full" onClick={() => setIsMenuOpen(false)}>
+                      Start Free Trial
+                    </Button>
                   </div>
                 </nav>
               </div>

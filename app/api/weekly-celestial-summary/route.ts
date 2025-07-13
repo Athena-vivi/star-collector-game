@@ -15,20 +15,25 @@ export async function GET() {
     ]
     const eventsText = weekEvents.map(e => `${e.day}: ${e.event}`).join('\n')
 
-    // 用AI生成本周天象综述
-    const client = new OpenRouterClient(API_KEYS.GPT4O)
+    // 日志：检查API key
+    const apiKey = API_KEYS.GPT4O || ''
+    console.log('API_KEYS.GPT4O:', apiKey)
+    const client = new OpenRouterClient(apiKey)
     const prompt = `Summarize the following weekly celestial events for astronomy enthusiasts in 2-3 sentences, highlighting the most exciting phenomena and best viewing opportunities.\n\n${eventsText}`
     const response = await client.chat('openai/gpt-4o', [
       { role: 'system', content: 'You are an expert astronomy event summarizer.' },
       { role: 'user', content: prompt }
     ], { max_tokens: 200 })
-    const summary = response.choices[0].message.content
+    // 日志：检查AI响应结构
+    console.log('OpenRouter response:', response)
+    const summary = response.choices[0]?.message?.content
 
     return NextResponse.json({
       summary,
       weekEvents
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to generate weekly celestial summary.' }, { status: 500 })
+    console.error('Weekly summary API error:', error)
+    return NextResponse.json({ error: String(error) }, { status: 500 })
   }
 } 
