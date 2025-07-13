@@ -10,7 +10,8 @@ import {
   Palette, 
   User, 
   Menu, 
-  X
+  X,
+  BookOpen
 } from 'lucide-react'
 
 export default function Navigation() {
@@ -21,6 +22,7 @@ export default function Navigation() {
     { name: 'AI Q&A', href: '/ask', icon: <MessageSquare className="w-4 h-4" /> },
     { name: 'Wallpaper Studio', href: '/studio', icon: <Palette className="w-4 h-4" /> },
     { name: 'Account', href: '/account', icon: <User className="w-4 h-4" /> },
+    { name: 'Blog', href: '/blog', icon: <BookOpen className="w-4 h-4" /> },
   ]
 
   const isActive = (href: string) => {
