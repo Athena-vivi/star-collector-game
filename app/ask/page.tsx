@@ -44,11 +44,13 @@ export default function AskPage() {
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const [freeAskCount, setFreeAskCount] = useState(() => {
+  const [freeAskCount, setFreeAskCount] = useState(5);
+
+  useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     const key = `ai_ask_count_${today}`;
-    return 5 - parseInt(localStorage.getItem(key) || "0", 10);
-  });
+    setFreeAskCount(5 - parseInt(typeof window !== 'undefined' ? localStorage.getItem(key) || "0" : "0", 10));
+  }, []);
 
   // 每次提问后更新剩余次数
   const updateFreeAskCount = () => {
