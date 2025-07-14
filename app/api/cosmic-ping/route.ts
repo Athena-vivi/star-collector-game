@@ -14,6 +14,13 @@ interface CelestialEvent {
     ra: number
     dec: number
   }
+  expertAdvice?: {
+    observationTips: string
+    scienceInsight: string
+    difficulty: string
+    safetyTips: string
+  }
+  publishedAt?: string // 新增发布时间字段
 }
 
 interface WeatherData {
@@ -52,9 +59,10 @@ function fetchWithTimeout(promise: Promise<any>, ms = 5000, fallback: any = unde
 // NASA APOD API
 async function fetchNASAData(): Promise<any[]> {
   try {
-    const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=5')
+    const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
     const data = await response.json()
-    return Array.isArray(data) ? data : []
+    // 返回单条也用数组包裹，兼容后续处理
+    return data ? [data] : []
   } catch (error) {
     console.error('NASA API Error:', error)
     return []
@@ -171,19 +179,31 @@ function getLightPollutionLevel(lat: number, lng: number): 'low' | 'medium' | 'h
   return 'medium'
 }
 
-// 使用Claude-3-Haiku生成摘要
-async function generateSummary(events: any[], weather: WeatherData): Promise<string> {
+// 1. 修改generateSummary为generateExpertAdvice，返回结构化建议
+// 2. 在GET中为每个event增加expertAdvice字段
+// 3. prompt要求AI输出JSON数组，每个元素对应一个event，包含observationTips、scienceInsight、difficulty、safetyTips
+async function generateExpertAdvice(events: any[], weather: WeatherData): Promise<any[]> {
   try {
-    const openrouterKey = process.env.CLAUDE_HAIKU_API_KEY
+    const openrouterKey = process.env.LLAMA3_70B_API_KEY
     if (!openrouterKey) {
-      return generateFallbackSummary(events, weather)
+      return events.map(() => ({
+        observationTips: '暂无专家建议',
+        scienceInsight: '暂无专家建议',
+        difficulty: '暂无专家建议',
+        safetyTips: '暂无专家建议'
+      }))
     }
-    
+    // 构造详细prompt
     const prompt = `
-As an astronomy expert, please generate a summary of about 150 words for tonight's stargazing activities.
+As an astronomy expert, please generate a JSON array of expert advice for each celestial event.
+Each object in the array should contain:
+- observationTips: A brief, actionable tip for amateur astronomers.
+- scienceInsight: A scientific insight or interesting fact about the event.
+- difficulty: A difficulty rating (e.g., "Beginner", "Intermediate", "Advanced").
+- safetyTips: Safety considerations for the event.
 
 Tonight's celestial events:
-${events.map(e => `- ${e.name || e.title}: ${e.description || 'Visible'}`).join('\n')}
+${events.map(e => `- ${e.name}: ${e.description}`).join('\n')}
 
 Weather conditions:
 - Weather: ${weather.condition}
@@ -191,9 +211,9 @@ Weather conditions:
 - Visibility: ${weather.visibility}m
 - Light pollution: ${weather.lightPollution}
 
-Please provide stargazing recommendations for amateur astronomers in clear, accessible language.
+Return only a valid JSON array, no explanation, no extra text, no markdown.
 `
-
+    // 调用AI
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -201,23 +221,49 @@ Please provide stargazing recommendations for amateur astronomers in clear, acce
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3-haiku',
+        model: 'meta-llama/llama-3-70b-instruct',
         messages: [
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_tokens: 300,
+        max_tokens: 600,
         temperature: 0.7
       })
     })
-
     const data = await response.json()
-    return data.choices?.[0]?.message?.content || generateFallbackSummary(events, weather)
+    console.log('【AI专家建议】AI raw response:', data.choices?.[0]?.message?.content)
+    // 健壮解析AI返回内容
+    let aiContent = data.choices?.[0]?.message?.content || '[]'
+    try {
+      const adviceArr = JSON.parse(aiContent)
+      if (Array.isArray(adviceArr)) return adviceArr
+    } catch {}
+    // 正则提取JSON
+    try {
+      const match = aiContent.match(/\[([\s\S]*)\]/)
+      if (match) {
+        const jsonStr = '[' + match[1] + ']'
+        const adviceArr = JSON.parse(jsonStr)
+        if (Array.isArray(adviceArr)) return adviceArr
+      }
+    } catch {}
+    // 兜底
+    return events.map(() => ({
+      observationTips: '暂无专家建议',
+      scienceInsight: '暂无专家建议',
+      difficulty: '暂无专家建议',
+      safetyTips: '暂无专家建议'
+    }))
   } catch (error) {
-    console.error('AI Summary Error:', error)
-    return generateFallbackSummary(events, weather)
+    console.error('AI Expert Advice Error:', error)
+    return events.map(() => ({
+      observationTips: '暂无专家建议',
+      scienceInsight: '暂无专家建议',
+      difficulty: '暂无专家建议',
+      safetyTips: '暂无专家建议'
+    }))
   }
 }
 
@@ -260,17 +306,18 @@ function processEvents(nasaData: any[], heavensData: any[], mpcData: any[]): Cel
         id: `nasa_${index}`,
         name: item.title,
         type: 'star',
-        description: item.explanation.substring(0, 100) + '...',
+        description: item.explanation,
         bestTime: '20:00 - 22:00',
         visibility: 'good',
-        source: 'NASA APOD'
+        source: 'NASA APOD',
+        publishedAt: item.date // 新增发布时间字段
       })
     }
   })
   
   // 处理Heavens-Above数据
   heavensData.forEach((item, index) => {
-    if (item.title) {
+    if (item.title && item.title !== 'The resource cannot be found.') {
       events.push({
         id: `ha_${index}`,
         name: item.title,
@@ -282,10 +329,9 @@ function processEvents(nasaData: any[], heavensData: any[], mpcData: any[]): Cel
       })
     }
   })
-  
   // 处理MPC数据
   mpcData.forEach((item, index) => {
-    if (item.title) {
+    if (item.title && item.title !== 'The resource cannot be found.') {
       events.push({
         id: `mpc_${index}`,
         name: item.title,
@@ -297,43 +343,8 @@ function processEvents(nasaData: any[], heavensData: any[], mpcData: any[]): Cel
       })
     }
   })
-  
-  // Add default events if data is insufficient
-  if (events.length < 3) {
-    const defaultEvents: CelestialEvent[] = [
-      {
-        id: 'default_1',
-        name: 'Jupiter Opposition',
-        type: 'planet',
-        description: 'Jupiter reaches its best viewing position tonight with magnitude -2.9',
-        bestTime: '20:30 - 22:00',
-        visibility: 'excellent',
-        magnitude: -2.9,
-        constellation: 'Pisces',
-        source: 'System Default'
-      },
-      {
-        id: 'default_2',
-        name: 'First Quarter Moon',
-        type: 'moon',
-        description: 'The moon shows a perfect half-circle, ideal for observing lunar surface details',
-        bestTime: '19:00 - 21:00',
-        visibility: 'good',
-        source: 'System Default'
-      }
-    ]
-    events.push(...defaultEvents.slice(0, 3 - events.length))
-  }
-  
+  // 不再补充默认事件
   return events.slice(0, 5) // 最多返回5个事件
-}
-
-// 使用Claude-3-Haiku生成摘要
-async function generateSummaryWithTimeout(events: any[], weather: WeatherData, ms = 5000): Promise<string> {
-  return Promise.race([
-    generateSummary(events, weather),
-    new Promise<string>(resolve => setTimeout(() => resolve(generateFallbackSummary(events, weather)), ms))
-  ])
 }
 
 export async function GET(request: NextRequest) {
@@ -362,7 +373,14 @@ export async function GET(request: NextRequest) {
     // 处理天象数据
     const events = processEvents(nasaData, heavensData, mpcData)
     // AI摘要加超时
-    const summary = await generateSummaryWithTimeout(events, weather, 5000)
+    const expertAdvice = await generateExpertAdvice(events, weather)
+
+    // 为每个事件添加专家建议
+    events.forEach((event, index) => {
+      if (expertAdvice[index]) {
+        event.expertAdvice = expertAdvice[index]
+      }
+    })
 
     const response: CosmicPingResponse = {
       location: {
@@ -377,7 +395,7 @@ export async function GET(request: NextRequest) {
       summary: {
         totalEvents: events.length,
         bestEvent: events.find(e => e.visibility === 'excellent'),
-        recommendations: [summary]
+        recommendations: [generateFallbackSummary(events, weather)]
       }
     }
 

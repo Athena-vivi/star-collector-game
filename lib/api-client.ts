@@ -96,31 +96,6 @@ export class APIClient {
     return this.cache.dedupe(cacheKey, requestFn)
   }
 
-  async refineGoal(data: { userInput: string; userContext?: string }): Promise<{ goal: any }> {
-    return this.request("/ai/refine-goal", {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-  }
-
-  async getMorningEncouragement(goals: any[]): Promise<{ encouragement: string }> {
-    return this.request("/ai/morning-encouragement", {
-      method: "POST",
-      body: JSON.stringify({ goals }),
-      cache: true,
-      cacheTime: 10 * 60 * 1000, // 10分钟缓存
-    })
-  }
-
-  async getEveningQuestions(): Promise<{ questions: string[] }> {
-    return this.request("/ai/evening-questions", {
-      method: "POST",
-      body: JSON.stringify({ recentEntries: [] }),
-      cache: true,
-      cacheTime: 30 * 60 * 1000, // 30分钟缓存
-    })
-  }
-
   async analyzeDecision(data: {
     question: string
     context: string

@@ -34,7 +34,6 @@ const plans = [
       "Advanced AI coaching",
       "Multi-perspective decisions",
       "Unlimited memory & context",
-      "Weekly AI insights",
       "Progress analytics",
       "Priority support",
       "Export your data",

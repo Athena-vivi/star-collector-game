@@ -35,7 +35,7 @@ const steps = [
     href: "/continuous-growth",
     description:
       "Receive weekly insights, track your progress, and get AI recommendations for course corrections and optimizations.",
-    details: ["Weekly AI reports", "Progress visualization", "Trend analysis", "Personalized recommendations"],
+    details: ["Progress visualization", "Trend analysis", "Personalized recommendations"],
     color: "from-purple-400 to-pink-500",
   },
 ]

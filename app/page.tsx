@@ -24,7 +24,8 @@ import {
   CheckCircle,
   Play,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Shield
 } from 'lucide-react'
 import Link from 'next/link'
 import { GlowingGradientIcon } from '@/components/ui/gradient-icon'
@@ -40,6 +41,13 @@ interface CelestialEvent {
   constellation?: string
   source: string
   icon: React.ReactNode
+  expertAdvice?: {
+    observationTips?: string;
+    scienceInsight?: string;
+    difficulty?: string;
+    safetyTips?: string;
+  };
+  publishedAt?: string; // Added for new_code
 }
 
 interface WeatherData {
@@ -58,9 +66,8 @@ export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [showCityModal, setShowCityModal] = useState(false)
   const [newCity, setNewCity] = useState('')
-  const [weeklySummary, setWeeklySummary] = useState('');
-  const [weeklyEvents, setWeeklyEvents] = useState<{ day: string; event: string }[]>([]);
-  const [weeklyLoading, setWeeklyLoading] = useState(true);
+  const [fetchDate, setFetchDate] = useState<string | null>(null)
+  // 删除与weeklySummary、weeklyEvents、weeklyLoading、fetchWeeklySummary等相关的所有代码和展示
 
   useEffect(() => {
     const fetchTonightEvents = async () => {
@@ -80,12 +87,17 @@ export default function HomePage() {
             magnitude: event.magnitude,
             constellation: event.constellation,
             source: event.source || 'API',
-            icon: getEventIcon(event.type || 'star')
+            icon: getEventIcon(event.type || 'star'),
+            expertAdvice: event.expertAdvice || {},
+            publishedAt: event.publishedAt // Added for new_code
           }))
           setTonightEvents(events)
           
           if (data.data.weather) {
             setWeather(data.data.weather)
+          }
+          if (data.data.date) {
+            setFetchDate(data.data.date)
           }
         } else {
           const defaultEvents: CelestialEvent[] = [
@@ -97,7 +109,14 @@ export default function HomePage() {
               bestTime: '20:30 - 22:00',
               visibility: 'excellent',
               source: 'System Default',
-              icon: <Telescope className="w-5 h-5" />
+              icon: <Telescope className="w-5 h-5" />,
+              expertAdvice: {
+                observationTips: "Look for Jupiter's distinctive cloud belts and moons. Use a telescope for better detail.",
+                scienceInsight: "Jupiter is the largest planet in our solar system, known for its Great Red Spot and numerous moons.",
+                difficulty: "Intermediate",
+                safetyTips: "Avoid direct eye observation of the Great Red Spot without proper eye protection."
+              },
+              publishedAt: '2023-10-26' // Added for new_code
             },
             {
               id: '2',
@@ -107,7 +126,14 @@ export default function HomePage() {
               bestTime: '19:00 - 21:00',
               visibility: 'good',
               source: 'System Default',
-              icon: <Moon className="w-5 h-5" />
+              icon: <Moon className="w-5 h-5" />,
+              expertAdvice: {
+                observationTips: "Use a small telescope or binoculars to see the lunar surface features.",
+                scienceInsight: "The Moon's surface is covered in craters, mountains, and seas, revealing Earth's past.",
+                difficulty: "Beginner",
+                safetyTips: "No special safety precautions needed for this event."
+              },
+              publishedAt: '2023-10-26' // Added for new_code
             },
             {
               id: '3',
@@ -117,7 +143,14 @@ export default function HomePage() {
               bestTime: '23:00 - 02:00',
               visibility: 'fair',
               source: 'System Default',
-              icon: <Sparkles className="w-5 h-5" />
+              icon: <Sparkles className="w-5 h-5" />,
+              expertAdvice: {
+                observationTips: "Find a dark location away from city lights. Use a comfortable chair or blanket.",
+                scienceInsight: "Meteor showers are caused by Earth passing through the debris trail of a comet.",
+                difficulty: "Intermediate",
+                safetyTips: "Always use a safe location and proper eye protection."
+              },
+              publishedAt: '2023-10-26' // Added for new_code
             }
           ]
           setTonightEvents(defaultEvents)
@@ -133,7 +166,14 @@ export default function HomePage() {
             bestTime: '20:30 - 22:00',
             visibility: 'excellent',
             source: 'System Default',
-            icon: <Telescope className="w-5 h-5" />
+            icon: <Telescope className="w-5 h-5" />,
+            expertAdvice: {
+              observationTips: "Look for Jupiter's distinctive cloud belts and moons. Use a telescope for better detail.",
+              scienceInsight: "Jupiter is the largest planet in our solar system, known for its Great Red Spot and numerous moons.",
+              difficulty: "Intermediate",
+              safetyTips: "Avoid direct eye observation of the Great Red Spot without proper eye protection."
+            },
+            publishedAt: '2023-10-26' // Added for new_code
           },
           {
             id: '2',
@@ -143,7 +183,14 @@ export default function HomePage() {
             bestTime: '19:00 - 21:00',
             visibility: 'good',
             source: 'System Default',
-            icon: <Moon className="w-5 h-5" />
+            icon: <Moon className="w-5 h-5" />,
+            expertAdvice: {
+              observationTips: "Use a small telescope or binoculars to see the lunar surface features.",
+              scienceInsight: "The Moon's surface is covered in craters, mountains, and seas, revealing Earth's past.",
+              difficulty: "Beginner",
+              safetyTips: "No special safety precautions needed for this event."
+            },
+            publishedAt: '2023-10-26' // Added for new_code
           },
           {
             id: '3',
@@ -153,7 +200,14 @@ export default function HomePage() {
             bestTime: '23:00 - 02:00',
             visibility: 'fair',
             source: 'System Default',
-            icon: <Sparkles className="w-5 h-5" />
+            icon: <Sparkles className="w-5 h-5" />,
+            expertAdvice: {
+              observationTips: "Find a dark location away from city lights. Use a comfortable chair or blanket.",
+              scienceInsight: "Meteor showers are caused by Earth passing through the debris trail of a comet.",
+              difficulty: "Intermediate",
+              safetyTips: "Always use a safe location and proper eye protection."
+            },
+            publishedAt: '2023-10-26' // Added for new_code
           }
         ]
         setTonightEvents(defaultEvents)
@@ -165,23 +219,7 @@ export default function HomePage() {
     fetchTonightEvents()
   }, [])
 
-  useEffect(() => {
-    const fetchWeeklySummary = async () => {
-      setWeeklyLoading(true);
-      try {
-        const res = await fetch('/api/weekly-celestial-summary');
-        const data = await res.json();
-        setWeeklySummary(data.summary || '');
-        setWeeklyEvents(data.weekEvents || []);
-      } catch {
-        setWeeklySummary('Failed to load weekly celestial summary.');
-        setWeeklyEvents([]);
-      } finally {
-        setWeeklyLoading(false);
-      }
-    };
-    fetchWeeklySummary();
-  }, []);
+  // 删除与weeklySummary、weeklyEvents、weeklyLoading、fetchWeeklySummary等相关的所有代码和展示
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -365,6 +403,7 @@ export default function HomePage() {
                 <Calendar className="w-6 h-6 text-transparent bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text" />
                 Tonight's Best Viewing Window
               </CardTitle>
+              {/* 抓取时间已移除 */}
             </CardHeader>
             <CardContent>
               {loading ? (
@@ -377,21 +416,21 @@ export default function HomePage() {
                   {tonightEvents.map((event) => (
                     <div
                       key={event.id}
-                      className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-blue-800/40 hover:bg-white/10 transition-all duration-300"
+                      className="flex flex-col gap-2 p-4 bg-white/5 rounded-lg border border-blue-800/40 hover:bg-white/10 transition-all duration-300"
                     >
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div>
-                            {event.icon}
-                          </div>
+                          <div>{event.icon}</div>
                           <div>
                             <h3 className="text-white font-semibold">{event.name}</h3>
+                            {/* 发布时间已移除 */}
                             <p className="text-gray-400 text-sm">{event.description}</p>
                             {event.source && (
                               <p className="text-gray-500 text-xs mt-1">Source: {event.source}</p>
                             )}
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right min-w-[80px]">
                           <p className="text-white text-sm font-medium">{event.bestTime}</p>
                           <Badge className={`bg-blue-700 text-white border-0`}>
                             {event.visibility === 'excellent' && 'Excellent'}
@@ -401,6 +440,8 @@ export default function HomePage() {
                           </Badge>
                         </div>
                       </div>
+                      {/* 专家建议区块 */}
+                    </div>
                   ))}
                 </div>
               )}
@@ -410,47 +451,6 @@ export default function HomePage() {
       </section>
 
       <Separator className="bg-blue-800/30" />
-
-      {/* Weekly Summary */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">
-            This Week's Celestial Summary
-          </h2>
-          {weeklyLoading ? (
-            <div className="text-center text-gray-400 py-8">Loading weekly celestial summary...</div>
-          ) : (
-            <>
-              <div className="max-w-3xl mx-auto text-center mb-8">
-                <Card className="bg-white/10 backdrop-blur-sm border-blue-800/40 shadow-lg">
-                  <CardContent className="pt-6">
-                    <p className="text-xl text-blue-200">{weeklySummary}</p>
-                  </CardContent>
-                </Card>
-              </div>
-              {/* 替换weeklyEvents渲染部分为一行七天，响应式自动换行 */}
-              <div className="flex justify-center">
-                <div className="flex flex-row flex-wrap justify-center gap-8 w-full max-w-6xl">
-                  {weeklyEvents.map((e) => (
-                    <Card
-                      key={e.day}
-                      className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40 border-blue-800/40 shadow-2xl rounded-xl flex flex-col items-center"
-                      style={{ width: '12em', minWidth: '10em', maxWidth: '14em' }}
-                    >
-                      <CardHeader className="pb-0 w-full mb-4">
-                        <div className="text-white text-2xl font-bold text-center w-full">{e.day}</div>
-                      </CardHeader>
-                      <CardContent className="min-h-[80px] flex flex-col justify-center items-center w-full pt-2">
-                        <p className="text-gray-300 break-words text-center w-full">{e.event}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
 
       {/* Features Section */}
       <section className="py-20">
